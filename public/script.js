@@ -55,22 +55,22 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
+
+    socket.on("user-disconnected", (userName, userId) => {
+      const el = document.getElementById("video-me");
+      const elVideo = document.getElementById(userId);
+      if (userName === user) {
+        el.remove();
+      } else {
+        elVideo.remove();
+        alert(`${userName} left!`);
+      }
+    });
   })
   .catch((e) => {
     console.log(e);
     alert("getUserMedia() is not supported in your browser");
   });
-
-socket.on("user-disconnected", (userName, userId) => {
-  const el = document.getElementById("video-me");
-  const elVideo = document.getElementById(userId);
-  if (userName === user) {
-    el.remove();
-  } else {
-    elVideo.remove();
-    alert(`${userName} left!`);
-  }
-});
 
 const connectToNewUser = (userId, stream) => {
   const call = peer.call(userId, stream);
