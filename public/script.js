@@ -1,6 +1,7 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
+myVideo.id = "video-me";
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
@@ -54,19 +55,27 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
-
-    // socket.on("user-disconnected", () => {
-    //   video.remove();
-    // });
   })
   .catch((e) => {
     console.log(e);
     alert("getUserMedia() is not supported in your browser");
   });
 
+socket.on("user-disconnected", (userName, userId) => {
+  const el = document.getElementById("video-me");
+  const elVideo = document.getElementById(userId);
+  if (userName === user) {
+    el.remove();
+  } else {
+    elVideo.remove();
+    alert(`${userName} left!`);
+  }
+});
+
 const connectToNewUser = (userId, stream) => {
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
+  video.id = userId;
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
   });
