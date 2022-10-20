@@ -14,40 +14,54 @@ backBtn.addEventListener("click", () => {
 
 showChat.addEventListener("click", () => {
   document.querySelector(".main__right").style.display = "flex";
-  document.querySelector(".main__right").style.flex = "1";
+  document.quer;
+
+  ySelector(".main__right").style.flex = "1";
   document.querySelector(".main__left").style.display = "none";
   document.querySelector(".header__back").style.display = "block";
 });
 
 const user = prompt("Enter your name");
 
-var peer = new Peer(undefined, {
-  path: "/peerjs",
+const myPeer = new Peer(undefined, {
   host: "/",
-  port: "443",
+  port: 443,
+  path: "/peer",
 });
 
 let myVideoStream;
 navigator.mediaDevices
   .getUserMedia({
     audio: true,
-    video: true,
+    video: {
+      facingMode: "user",
+    },
   })
   .then((stream) => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
 
+    const video = document.createElement("video");
     peer.on("call", (call) => {
       call.answer(stream);
-      const video = document.createElement("video");
       call.on("stream", (userVideoStream) => {
         addVideoStream(video, userVideoStream);
       });
     });
 
+    peer.on("disconnected", function () {});
+    socket.emit("ready");
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
+
+    // socket.on("user-disconnected", () => {
+    //   video.remove();
+    // });
+  })
+  .catch((e) => {
+    console.log(e);
+    alert("getUserMedia() is not supported in your browser");
   });
 
 const connectToNewUser = (userId, stream) => {
@@ -91,6 +105,7 @@ text.addEventListener("keydown", (e) => {
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
+
 muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
@@ -137,4 +152,9 @@ socket.on("createMessage", (message, userName) => {
         }</span> </b>
         <span>${message}</span>
     </div>`;
+});
+socket.on("user-disconnected", (userName) => {
+  messages.innerHTML =
+    messages.innerHTML +
+    `<p style='font-style:italic;color:white;text-align:center;font-size: 11px'><span>${userName} </span>left room!</p>`;
 });

@@ -5,8 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 app.set("view engine", "ejs");
 const io = require("socket.io")(server, {
   cors: {
-    origin: '*'
-  }
+    origin: "*",
+  },
 });
 const { ExpressPeerServer } = require("peer");
 const peerServer = ExpressPeerServer(server, {
@@ -25,11 +25,21 @@ app.get("/:room", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  //Register a new handler for the given event.
   socket.on("join-room", (roomId, userId, userName) => {
+    console.log(userName + " joined!");
+
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
+    socket.on("ready", () => {
+      socket.to(roomId).broadcast.emit("user-connected", userId);
+    });
     socket.on("message", (message) => {
       io.to(roomId).emit("createMessage", message, userName);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("user-disconnected", userName);
+      io.to(roomId).emit("user-disconnected", userName);
     });
   });
 });
