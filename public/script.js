@@ -57,14 +57,10 @@ navigator.mediaDevices
     });
 
     socket.on("user-disconnected", (userName, userId) => {
-      const el = document.getElementById("video-me");
+      // const el = document.getElementById("video-me");
       const elVideo = document.getElementById(userId);
-      if (userName === user) {
-        el.remove();
-      } else {
-        elVideo.remove();
-        alert(`${userName} left!`);
-      }
+      elVideo.remove();
+      alert(`${userName} left!`);
     });
   })
   .catch((e) => {
