@@ -60,7 +60,7 @@ navigator.mediaDevices
     // });
   })
   .catch((e) => {
-    console.log(e);
+    console.log("fail to get getUserMedia", e);
     alert("getUserMedia() is not supported in your browser");
   });
 
