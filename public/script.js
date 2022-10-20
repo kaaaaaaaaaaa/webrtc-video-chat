@@ -23,10 +23,10 @@ showChat.addEventListener("click", () => {
 
 const user = prompt("Enter your name");
 
-const myPeer = new Peer(undefined, {
+var peer = new Peer(undefined, {
+  path: "/peerjs",
   host: "/",
-  port: 443,
-  path: "/peer",
+  port: "443",
 });
 
 let myVideoStream;
@@ -60,7 +60,7 @@ navigator.mediaDevices
     // });
   })
   .catch((e) => {
-    console.log("fail to get getUserMedia", e);
+    console.log(e);
     alert("getUserMedia() is not supported in your browser");
   });
 
