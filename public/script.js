@@ -56,12 +56,12 @@ navigator.mediaDevices
       connectToNewUser(userId, stream);
     });
 
-    socket.on("user-disconnected", (userName, userId) => {
-      // const el = document.getElementById("video-me");
-      const elVideo = document.getElementById(userId);
-      elVideo.remove();
-      alert(`${userName} left!`);
-    });
+    // socket.on("user-disconnected", (userName, userId) => {
+    //   // const el = document.getElementById("video-me");
+    //   const elVideo = document.getElementById(userId);
+    //   elVideo.remove();
+    //   alert(`${userName} left!`);
+    // });
   })
   .catch((e) => {
     console.log(e);
